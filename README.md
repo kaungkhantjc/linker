@@ -7,6 +7,8 @@ Found bugs or have suggestions? Please create issue in this repository. Love thi
 
 ## Download
 <a href='https://play.google.com/store/apps/details?id=com.jcoder.linker'><img width="200" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
+##### OR
+[Direct Download here](https://github.com/kaungkhantjc/linker/releases/download/v1.0.0/Linker_v1.0.0.apk)
 
 ## Screenshots
 <p float="left">
