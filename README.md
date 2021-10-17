@@ -8,6 +8,14 @@ Found bugs or have suggestions? Please create issue in this repository. Love thi
 ## Download
 <a href='https://play.google.com/store/apps/details?id=com.jcoder.linker'><img width="200" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
 
+## Screenshots
+<p float="left">
+  <img src="https://github.com/kaungkhantjc/linker/blob/master/screenshots/screenshot_1.png?raw=true" width="120" />
+  <img src="https://github.com/kaungkhantjc/linker/blob/master/screenshots/screenshot_2.png?raw=true" width="120" /> 
+  <img src="https://github.com/kaungkhantjc/linker/blob/master/screenshots/screenshot_3.png?raw=true" width="120" />
+  <img src="https://github.com/kaungkhantjc/linker/blob/master/screenshots/screenshot_4.png?raw=true" width="120" />
+</p>
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
