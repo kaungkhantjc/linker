@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Linker</string>
+
+    <!-- Buttons -->
+    <string name="btn_github">Github</string>
+    <string name="btn_licenses">Licenses</string>
+    <string name="btn_launch">Launch</string>
+    <string name="btn_clear_all">Clear all</string>
+    <string name="btn_no">No</string>
+    <string name="btn_yes">Yes</string>
+
+    <!-- Titles -->
+    <string name="title_text">Text</string>
+    <string name="title_image">Image</string>
+    <string name="msg_app_details"><![CDATA[Linker is an open source, simple deep link launcher app. Just enter deep link and launch. Boom!<br><br>It also supports <b>Copy to clipboard</b> feature for sharing text and image. Just click share/send menu from any apps like Gallery, Browsers and choose <b>Copy to clipboard</b>. Voila! You can paste copied text or image in any supported apps.<br><br>Found bugs or have suggestions? Please create issue in Github repo. Love this app? Please rate at https://play.google.com/store/apps/details?id=com.jcoder.linker .]]></string>
+    <string name="title_delete_confirmation">Delete confirmation</string>
+
+    <!-- Labels -->
+    <string name="label_copy_to_clipboard">Copy to clipboard</string>
+    <string name="label_link_suggestions">Link Suggestions</string>
+
+    <!-- Messages -->
+    <string name="msg_item_copied_to_clipboard">%s copied to clipboard.</string>
+    <string name="msg_add_link">Add link</string>
+    <string name="msg_delete_confirmation">Are you sure to delete %s?</string>
+
+    <!-- Menus -->
+    <string name="menu_share_app">Share app</string>
+    <string name="menu_search">Search</string>
+
+    <string name="hint_enter_link">Enter link</string>
+    <string name="err_empty_link">Link is empty</string>
+
+
+</resources>

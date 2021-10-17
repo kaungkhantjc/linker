@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="links">
+        <item>fb://page/</item>
+        <item>fb://profile/</item>
+        <item>fb://group/</item>
+        <item>fb-messenger://user/</item>
+        <item>instagram://user?username=</item>
+        <item>viber://</item>
+        <item>http://</item>
+        <item>https://</item>
+        <item>https://t.me/</item>
+        <item>https://discordapp.com/channels/</item>
+        <item>https://discord.gg/</item>
+        <item>https://play.google.com/store/apps/details?id=</item>
+        <item>https://translate.google.com/#auto|my|</item>
+    </string-array>
+</resources>
