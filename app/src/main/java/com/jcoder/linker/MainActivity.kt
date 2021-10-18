@@ -1,6 +1,7 @@
 package com.jcoder.linker
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
@@ -114,7 +115,7 @@ class MainActivity : AppCompatActivity() {
             try {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 startActivity(intent)
-            } catch (e: Exception) {
+            } catch (e: ActivityNotFoundException) {
                 MaterialAlertDialogBuilder(this@MainActivity)
                     .setTitle(e.javaClass.simpleName)
                     .setMessage(e.message)
@@ -168,5 +169,4 @@ class MainActivity : AppCompatActivity() {
                 loadLinks()
             }
         }
-
 }

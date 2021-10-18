@@ -12,7 +12,7 @@ interface LinkDao {
     fun getAll(): List<Link>
 
     @Insert
-    fun insertAll(vararg link: Link): Array<Long>
+    fun insertAll(vararg link: Link): LongArray
 
     @Delete
     fun delete(link: Link)
