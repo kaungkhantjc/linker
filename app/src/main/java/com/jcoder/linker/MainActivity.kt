@@ -141,10 +141,9 @@ class MainActivity : AppCompatActivity() {
                 "https://play.google.com/store/apps/details?id=$packageName"
             )
             putExtra(Intent.EXTRA_TITLE, getString(R.string.app_name))
-            data = iconUri
             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-            type = "text/plain"
         }, getString(R.string.menu_share_app))
+        shareIntent.setDataAndType(iconUri, "text/plain")
         startActivity(shareIntent)
     }
 

@@ -5,9 +5,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.core.content.IntentCompat
 import com.jcoder.linker.utils.ClipboardUtils.copyImage
 import com.jcoder.linker.utils.ClipboardUtils.copyText
 
@@ -23,6 +23,7 @@ class ClipboardActivity : Activity() {
                     handleSendImage(intent)
                 }
             }
+
             else -> {
                 finishApp()
             }
@@ -44,7 +45,8 @@ class ClipboardActivity : Activity() {
     }
 
     private fun handleSendImage(intent: Intent) {
-        (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let {
+        val uri = IntentCompat.getParcelableExtra(intent, Intent.EXTRA_STREAM, Uri::class.java)
+        uri?.let {
             copyImage(it)
             showCopiedToast(R.string.title_image)
             finishApp()

@@ -27,8 +27,6 @@ class LinkSuggestionsActivity : AppCompatActivity(), SearchView.OnQueryTextListe
     private val db by lazy { AppDatabase.getInstance(this) }
     private var searchView: SearchView? = null
 
-    private var makeChanges: Boolean = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLinkSuggestionsBinding.inflate(layoutInflater)
@@ -81,7 +79,6 @@ class LinkSuggestionsActivity : AppCompatActivity(), SearchView.OnQueryTextListe
     }
 
     private fun insertLink(url: String) {
-        makeChanges = true
         CoroutineScope(Dispatchers.IO).launch {
             val link = Link(url, System.currentTimeMillis())
             val linkId = db.linkDao().insertAll(link)[0]
@@ -94,13 +91,13 @@ class LinkSuggestionsActivity : AppCompatActivity(), SearchView.OnQueryTextListe
                 val position = linkModelList.indexOf(linkModel)
                 if (position != -1) {
                     adapter.notifyItemInserted(position)
+                    setResult(RESULT_OK)
                 }
             }
         }
     }
 
     private fun deleteLink(linkModel: LinkModel) {
-        makeChanges = true
         searchView?.setQuery("", true)
         CoroutineScope(Dispatchers.IO).launch {
             db.linkDao().delete(linkModel.link)
@@ -109,6 +106,7 @@ class LinkSuggestionsActivity : AppCompatActivity(), SearchView.OnQueryTextListe
         if (position != -1) {
             linkModelList.removeAt(position)
             adapter.notifyItemRemoved(position)
+            setResult(RESULT_OK)
         }
     }
 
@@ -122,7 +120,7 @@ class LinkSuggestionsActivity : AppCompatActivity(), SearchView.OnQueryTextListe
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> onBackPressed()
+            android.R.id.home -> finish()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -146,11 +144,6 @@ class LinkSuggestionsActivity : AppCompatActivity(), SearchView.OnQueryTextListe
                 deleteLink(linkModel)
             }
             .show()
-    }
-
-    override fun onBackPressed() {
-        if (makeChanges) setResult(RESULT_OK)
-        super.onBackPressed()
     }
 
 }
