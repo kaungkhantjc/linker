@@ -1,11 +1,11 @@
 package com.jcoder.linker
 
+import android.content.Context
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.jcoder.linker.adapters.LinkAdapter
 import com.jcoder.linker.data.Link
@@ -14,6 +14,7 @@ import com.jcoder.linker.databinding.ActivityLinkSuggestionsBinding
 import com.jcoder.linker.databinding.DialogLinkBinding
 import com.jcoder.linker.models.LinkModel
 import com.jcoder.linker.utils.ClipboardUtils.getTextFromClipboard
+import com.jcoder.linker.views.SpacingItemDecoration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,13 +37,15 @@ class LinkSuggestionsActivity : AppCompatActivity(), SearchView.OnQueryTextListe
         setupViews()
     }
 
+    private fun Context.toPx(dp: Int): Int {
+        val scale = this.resources.displayMetrics.density
+        return (dp * scale + 0.5f).toInt()
+    }
+
     private fun setupViews() {
         binding.recycler.adapter = adapter
         binding.recycler.addItemDecoration(
-            DividerItemDecoration(
-                this,
-                DividerItemDecoration.VERTICAL
-            )
+            SpacingItemDecoration(1, toPx(15), true)
         )
 
         val localLinks = resources.getStringArray(R.array.links)

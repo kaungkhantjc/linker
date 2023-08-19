@@ -1,12 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base application theme. -->
+
     <style name="Theme.Linker" parent="Theme.Material3.DayNight">
         <item name="colorPrimary">@color/pink_500</item>
         <item name="toolbarStyle">@style/Theme.Custom.Toolbar</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
-
-    <style name="Theme.Custom.Toolbar" parent="Widget.Material3.Toolbar">
-        <item name="android:background">@color/white</item>
-    </style>
-
 </resources>

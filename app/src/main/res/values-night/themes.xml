@@ -1,20 +1,12 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
-    <style name="Theme.Linker" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
+    <style name="Theme.Linker" parent="Theme.Material3.DayNight">
         <item name="colorPrimary">@color/pink_500</item>
-        <item name="colorPrimaryVariant">@color/black</item>
-        <item name="colorOnPrimary">@color/black</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/pink_200</item>
-        <item name="colorSecondaryVariant">@color/pink_500</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <item name="actionBarStyle">@style/BlackActionBar</item>
+        <item name="toolbarStyle">@style/Theme.Custom.Toolbar</item>
     </style>
 
-    <style name="BlackActionBar" parent="Widget.MaterialComponents.Light.ActionBar.Solid">
-        <item name="background">@color/black</item>
+    <style name="Theme.Custom.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="android:background">@color/action_bar</item>
     </style>
+
 </resources>

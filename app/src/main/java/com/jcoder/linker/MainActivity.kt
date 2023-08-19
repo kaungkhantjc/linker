@@ -2,7 +2,6 @@ package com.jcoder.linker
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -126,24 +125,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun shareApp() {
-        val icon = R.mipmap.ic_launcher
-        val iconUri = Uri.Builder()
-            .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
-            .authority(resources.getResourcePackageName(icon))
-            .appendPath(resources.getResourceTypeName(icon))
-            .appendPath(resources.getResourceEntryName(icon))
-            .build()
-
         val shareIntent = Intent.createChooser(Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(
                 Intent.EXTRA_TEXT,
                 "https://play.google.com/store/apps/details?id=$packageName"
             )
+            type = "text/plain"
             putExtra(Intent.EXTRA_TITLE, getString(R.string.app_name))
             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         }, getString(R.string.menu_share_app))
-        shareIntent.setDataAndType(iconUri, "text/plain")
         startActivity(shareIntent)
     }
 
