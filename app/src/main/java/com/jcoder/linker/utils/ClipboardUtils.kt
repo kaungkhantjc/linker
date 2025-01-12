@@ -2,29 +2,32 @@ package com.jcoder.linker.utils
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
+import androidx.core.content.ContextCompat
 
 object ClipboardUtils {
-    fun Context.getTextFromClipboard(): CharSequence {
-        val clipboard = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clipData = clipboard.primaryClip
+
+    fun Context.clipboardManager() =
+        ContextCompat.getSystemService(this, ClipboardManager::class.java)!!
+
+    fun ClipboardManager.getTextCompat(context: Context): String {
+        val clipData = this.primaryClip
         return if (clipData != null && clipData.itemCount > 0) {
             val firstItem = clipData.getItemAt(0)
-            if (firstItem.text != null) firstItem.coerceToText(this)
-            else ""
+            firstItem.coerceToText(context).toString()
         } else ""
     }
 
-    fun Context.copyText(text: String) {
-        val clipboard = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    fun ClipboardManager.setPlainText(text: String) {
         val clip = ClipData.newPlainText("text", text)
-        clipboard.setPrimaryClip(clip)
+        setPrimaryClip(clip)
     }
 
-    fun Context.copyImage(imageUri: Uri) {
-        val clipboard = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newUri(this.contentResolver, "URI", imageUri)
-        clipboard.setPrimaryClip(clip)
+    fun ClipboardManager.setUri(contentResolver: ContentResolver, uri: Uri) {
+        val clip = ClipData.newUri(contentResolver, "URI", uri)
+        this.setPrimaryClip(clip)
     }
+
 }

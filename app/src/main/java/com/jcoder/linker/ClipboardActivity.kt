@@ -1,5 +1,6 @@
 package com.jcoder.linker
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -8,8 +9,9 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.core.content.IntentCompat
-import com.jcoder.linker.utils.ClipboardUtils.copyImage
-import com.jcoder.linker.utils.ClipboardUtils.copyText
+import com.jcoder.linker.utils.ClipboardUtils.clipboardManager
+import com.jcoder.linker.utils.ClipboardUtils.setPlainText
+import com.jcoder.linker.utils.ClipboardUtils.setUri
 
 class ClipboardActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,10 +19,10 @@ class ClipboardActivity : Activity() {
 
         when (intent?.action) {
             Intent.ACTION_SEND -> {
-                if ("text/plain" == intent.type) {
-                    handleSendText(intent)
-                } else if (intent.type?.startsWith("image/") == true) {
-                    handleSendImage(intent)
+                when {
+                    intent.type == "text/plain" -> handleSendText(intent)
+
+                    intent.type?.startsWith("image/") == true -> handleSendImage(intent)
                 }
             }
 
@@ -38,16 +40,18 @@ class ClipboardActivity : Activity() {
 
     private fun handleSendText(intent: Intent) {
         intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
-            copyText(it)
+            clipboardManager().setPlainText(it)
             showCopiedToast(R.string.title_text)
             finishApp()
         }
     }
 
+    @SuppressLint("UnsafeIntentLaunch")
     private fun handleSendImage(intent: Intent) {
         val uri = IntentCompat.getParcelableExtra(intent, Intent.EXTRA_STREAM, Uri::class.java)
         uri?.let {
-            copyImage(it)
+            clipboardManager().setUri(contentResolver, it)
+            grantUriPermission(packageName, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
             showCopiedToast(R.string.title_image)
             finishApp()
         }
