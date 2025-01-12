@@ -6,18 +6,19 @@ plugins {
 }
 
 android {
-    compileSdk 34
+    compileSdk 35
+
+    buildFeatures {
+        viewBinding true
+        buildConfig true
+    }
 
     defaultConfig {
         applicationId "com.jcoder.linker"
         minSdk 14
-        targetSdk 34
-        versionCode 2
-        versionName "1.0.1"
-
-        buildFeatures {
-            viewBinding true
-        }
+        targetSdk 35
+        versionCode 3
+        versionName "1.0.2"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -51,11 +52,11 @@ android {
     kotlinOptions {
         jvmTarget = '11'
     }
-    buildToolsVersion '34.0.0'
     namespace 'com.jcoder.linker'
 }
 
 dependencies {
+    // dependencies should support min SDK 14
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'

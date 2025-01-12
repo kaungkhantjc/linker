@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="links">
+        <item>geo:</item>
+        <item>sms:</item>
+        <item>mailto:</item>
+        <item>tel:</item>
+        <item>market://launch?id=</item>
+        <item>content://</item>
         <item>fb://page/</item>
         <item>fb://profile/</item>
         <item>fb://group/</item>
@@ -10,9 +16,14 @@
         <item>http://</item>
         <item>https://</item>
         <item>https://t.me/</item>
+        <item>https://m.me/</item>
+        <item>https://fb.me/</item>
         <item>https://discordapp.com/channels/</item>
         <item>https://discord.gg/</item>
         <item>https://play.google.com/store/apps/details?id=</item>
+        <item>https://play.google.com/store/apps/dev?id=</item>
+        <item>https://play.google.com/store/search?c=apps&amp;q=</item>
+        <item>https://play.google.com/store/apps/collection/</item>
         <item>https://translate.google.com/#auto|my|</item>
     </string-array>
 </resources>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
         android:allowBackup="true"
@@ -10,8 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Linker"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        tools:targetApi="s">
+        android:dataExtractionRules="@xml/data_extraction_rules">
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize|screenLayout"
@@ -32,6 +30,7 @@
             android:name=".ClipboardActivity"
             android:exported="true"
             android:label="@string/label_copy_to_clipboard"
+            android:excludeFromRecents="true"
             android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />

@@ -13,28 +13,29 @@ import com.jcoder.linker.database.AppDatabase
 import com.jcoder.linker.databinding.ActivityLinkSuggestionsBinding
 import com.jcoder.linker.databinding.DialogLinkBinding
 import com.jcoder.linker.models.LinkModel
-import com.jcoder.linker.utils.ClipboardUtils.getTextFromClipboard
+import com.jcoder.linker.utils.ClipboardUtils.clipboardManager
+import com.jcoder.linker.utils.ClipboardUtils.getTextCompat
 import com.jcoder.linker.views.SpacingItemDecoration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LinkSuggestionsActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
     LinkAdapter.OnItemLongClickListener {
 
-    private lateinit var binding: ActivityLinkSuggestionsBinding
-    private val linkModelList by lazy { arrayListOf<LinkModel>() }
-    private val adapter by lazy { LinkAdapter(this, linkModelList, this) }
+    private val binding by lazy { ActivityLinkSuggestionsBinding.inflate(layoutInflater) }
+    private val linkAdapter by lazy { LinkAdapter(this, this) }
     private val db by lazy { AppDatabase.getInstance(this) }
-    private var searchView: SearchView? = null
+    private lateinit var searchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityLinkSuggestionsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(!isTaskRoot)
         setupViews()
+        loadLinks()
     }
 
     private fun Context.toPx(dp: Int): Int {
@@ -43,31 +44,44 @@ class LinkSuggestionsActivity : AppCompatActivity(), SearchView.OnQueryTextListe
     }
 
     private fun setupViews() {
-        binding.recycler.adapter = adapter
-        binding.recycler.addItemDecoration(
-            SpacingItemDecoration(1, toPx(15), true)
-        )
-
-        val localLinks = resources.getStringArray(R.array.links)
-        localLinks.forEach { url -> linkModelList.add(LinkModel(true, Link(url, 0))) }
-
-        CoroutineScope(Dispatchers.IO).launch {
-            val savedLinks = db.linkDao().getAll()
-            savedLinks.forEach { link -> linkModelList.add(LinkModel(false, link)) }
-            sortLinkModelList()
+        binding.recycler.apply {
+            setHasFixedSize(true)
+            adapter = linkAdapter
+            addItemDecoration(
+                SpacingItemDecoration(1, toPx(15), true)
+            )
         }
 
         binding.fabAdd.setOnClickListener { showEnterLinkDialog() }
     }
 
-    private fun sortLinkModelList() {
-        linkModelList.sortBy { it.link.url }
+    private fun loadLinks() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val links = mutableListOf<LinkModel>()
+
+            val localLinks = resources.getStringArray(R.array.links)
+            val savedLinks = db.linkDao().getAll()
+
+            links.addAll(localLinks.map { LinkModel(true, Link(it, 0)) })
+            links.addAll(savedLinks.map { LinkModel(false, it) })
+            links.sortBy { it.link.url }
+
+            updateLinkList(links)
+        }
+    }
+
+    private suspend fun updateLinkList(links: List<LinkModel>, callback: (() -> Unit)? = null) {
+        withContext(Dispatchers.Main) {
+            linkAdapter.asyncListDiffer.submitList(links) {
+                callback?.invoke()
+            }
+        }
     }
 
     private fun showEnterLinkDialog() {
         val dialogBinding = DialogLinkBinding.inflate(layoutInflater)
         dialogBinding.textInputLayout.setEndIconOnClickListener {
-            dialogBinding.edt.text?.insert(0, getTextFromClipboard())
+            dialogBinding.edt.text?.insert(0, clipboardManager().getTextCompat(this))
         }
         MaterialAlertDialogBuilder(this)
             .setView(dialogBinding.root)
@@ -88,36 +102,48 @@ class LinkSuggestionsActivity : AppCompatActivity(), SearchView.OnQueryTextListe
             link.id = linkId
 
             val linkModel = LinkModel(false, link)
-            linkModelList.add(linkModel)
-            sortLinkModelList()
-            runOnUiThread {
-                val position = linkModelList.indexOf(linkModel)
-                if (position != -1) {
-                    adapter.notifyItemInserted(position)
-                    setResult(RESULT_OK)
-                }
+            val links = linkAdapter.asyncListDiffer.currentList.toMutableList()
+            links.add(linkModel)
+            links.sortBy { it.link.url }
+
+            val insertedPosition = links.indexOf(linkModel)
+            updateLinkList(links) {
+                setResult(RESULT_OK)
+                binding.recycler.scrollToPosition(insertedPosition)
             }
         }
     }
 
     private fun deleteLink(linkModel: LinkModel) {
-        searchView?.setQuery("", true)
+        searchView.setQuery("", true)
+
         CoroutineScope(Dispatchers.IO).launch {
             db.linkDao().delete(linkModel.link)
-        }
-        val position = linkModelList.indexOf(linkModel)
-        if (position != -1) {
-            linkModelList.removeAt(position)
-            adapter.notifyItemRemoved(position)
-            setResult(RESULT_OK)
+
+            val links = linkAdapter.asyncListDiffer.currentList.toMutableList()
+            links.remove(linkModel)
+            links.sortBy { it.link.url }
+
+            updateLinkList(links) {
+                setResult(RESULT_OK)
+            }
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    private fun searchLink(query: String?) {
+        if (query == null) return
+        CoroutineScope(Dispatchers.IO).launch {
+            val links = linkAdapter.asyncListDiffer.currentList.toMutableList()
+            links.filter { it.link.url.contains(query) }
+            updateLinkList(links)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.link_suggestions_menu, menu)
-        val searchMenu = menu?.findItem(R.id.menu_search)
-        searchView = searchMenu?.let { (it.actionView as SearchView) }
-        searchView?.setOnQueryTextListener(this)
+        val searchMenu = menu.findItem(R.id.menu_search)
+        searchView = searchMenu.actionView as SearchView
+        searchView.setOnQueryTextListener(this)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -129,12 +155,12 @@ class LinkSuggestionsActivity : AppCompatActivity(), SearchView.OnQueryTextListe
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
-        query?.let { adapter.filter.filter(it) }
+        searchLink(query)
         return true
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        newText?.let { adapter.filter.filter(it) }
+        searchLink(newText)
         return true
     }
 

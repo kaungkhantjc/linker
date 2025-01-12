@@ -8,7 +8,7 @@ Found bugs or have suggestions? Please create issue in this repository. Love thi
 ## Download
 <a href='https://play.google.com/store/apps/details?id=com.jcoder.linker'><img width="200" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
 ##### OR
-[Direct Download here](https://github.com/kaungkhantjc/linker/releases/download/v1.0.0/Linker_v1.0.0.apk)
+[Download in GitHub releases](https://github.com/kaungkhantjc/linker/releases)
 
 ## Screenshots
 <p float="left">
@@ -27,7 +27,7 @@ Please make sure to update tests as appropriate.
 License
 =======
 
-    Copyright 2021 Kaung Khant Kyaw.
+    Copyright 2021 - 2025 Kaung Khant Kyaw.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

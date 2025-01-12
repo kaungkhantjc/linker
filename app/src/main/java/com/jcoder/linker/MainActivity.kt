@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
-import android.widget.ArrayAdapter
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -17,25 +16,26 @@ import androidx.core.text.HtmlCompat
 import androidx.core.widget.addTextChangedListener
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.jcoder.linker.data.Link
 import com.jcoder.linker.database.AppDatabase
 import com.jcoder.linker.databinding.ActivityMainBinding
-import com.jcoder.linker.models.LinkModel
-import com.jcoder.linker.utils.ClipboardUtils.getTextFromClipboard
+import com.jcoder.linker.utils.ClipboardUtils.clipboardManager
+import com.jcoder.linker.utils.ClipboardUtils.getTextCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val db by lazy { AppDatabase.getInstance(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        supportActionBar?.subtitle = BuildConfig.VERSION_NAME
 
         setupViews()
         loadLinks()
@@ -83,32 +83,35 @@ class MainActivity : AppCompatActivity() {
 
         binding.textInputLayout.setEndIconOnClickListener {
             val selectionStart = binding.autoCompleteTextView.selectionStart
-            binding.autoCompleteTextView.text.insert(selectionStart, getTextFromClipboard())
+            binding.autoCompleteTextView.text.insert(
+                selectionStart,
+                clipboardManager().getTextCompat(this)
+            )
         }
     }
 
     private fun loadLinks() {
-        val links = arrayListOf<LinkModel>()
-        val localLinks = resources.getStringArray(R.array.links)
-        localLinks.forEach { url -> links.add(LinkModel(true, Link(url, 0))) }
-
         CoroutineScope(Dispatchers.IO).launch {
+            val items = mutableListOf<String>()
+            val localLinks = resources.getStringArray(R.array.links)
             val savedLinks = db.linkDao().getAll()
-            savedLinks.forEach { link -> links.add(LinkModel(false, link)) }
-            links.sortBy { it.link.url }
 
-            runOnUiThread {
-                val adapter =
-                    ArrayAdapter(this@MainActivity, android.R.layout.simple_list_item_1, links)
-                binding.autoCompleteTextView.setAdapter(adapter)
-                binding.autoCompleteTextView.requestFocus()
+            items.addAll(localLinks)
+            items.addAll(savedLinks.map { it.url })
+            items.sort()
+
+            withContext(Dispatchers.Main) {
+                binding.autoCompleteTextView.apply {
+                    setSimpleItems(items.toTypedArray())
+                    requestFocus()
+                }
             }
         }
     }
 
     private fun launchLink() {
-        val url = binding.autoCompleteTextView.text.toString().trim()
-        if (url.isEmpty()) {
+        val url = binding.autoCompleteTextView.text.toString()
+        if (url.isBlank()) {
             binding.textInputLayout.error = getString(R.string.err_empty_link)
         } else {
             try {
